@@ -47,7 +47,7 @@ const NavBar: React.FC<Props> = ({ navItems }) => {
 
           <a
             target='_blank'
-            href='https://github.com/janbulling'
+            href='https://github.com/JanBulling/jukebox'
             aria-label='Jan Bulling Github'
           >
             <Button variant='ghost' size='icon'>

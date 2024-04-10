@@ -14,7 +14,8 @@ const footerItems = [
 const socialLinks = [
   {
     icon: "Github",
-    link: "https://github.com/janbulling",
+    link: "https://github.com/JanBulling",
+    target: "_blank",
   },
 ];
 

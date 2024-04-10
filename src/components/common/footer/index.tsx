@@ -12,6 +12,7 @@ type Props = {
   socialLinks: Array<{
     icon: string;
     link: string;
+    target?: React.HTMLAttributeAnchorTarget | undefined;
   }>;
 };
 
@@ -20,7 +21,12 @@ const Footer: React.FC<Props> = ({ navItems, socialLinks }) => {
     <footer className='flex flex-col items-center gap-6 border-t border-gray-200 bg-white px-8 py-4 dark:border-gray-900 dark:bg-gray-950 md:flex-row md:justify-between md:py-5'>
       <div className='flex flex-wrap content-start items-center justify-center gap-1 self-stretch'>
         {navItems.map((item) => (
-          <NavItem type='footer' href={item.link} key={item.link}>
+          <NavItem
+            type='footer'
+            href={item.link}
+            target={item.target}
+            key={item.link}
+          >
             {item.text}
           </NavItem>
         ))}
@@ -39,7 +45,12 @@ const Footer: React.FC<Props> = ({ navItems, socialLinks }) => {
         <div className='flex items-center gap-1'>
           {socialLinks.map((link) => {
             return (
-              <NavItem key={link.icon} href={link.link} type='footer'>
+              <NavItem
+                key={link.icon}
+                href={link.link}
+                target={link.target}
+                type='footer'
+              >
                 {/* @ts-ignore */}
                 <Icon icon={link.icon} aria-label={link.link} />
               </NavItem>
