@@ -8,7 +8,7 @@ type Params = {
   params: { id: string };
 };
 
-export async function GET(response: NextResponse, { params }: Params) {
+export async function GET(_: Request, { params }: Params) {
   try {
     const youtubeId = params.id;
     if (!youtubeId) return ApiError("BAD-REQUEST", "No youtube id given");
@@ -27,7 +27,7 @@ export async function GET(response: NextResponse, { params }: Params) {
 
     const downloadedData = ytdl.downloadFromInfo(info, { format: format });
 
-    const responseHeaders = new Headers(response.headers);
+    const responseHeaders = new Headers();
     responseHeaders.set(
       "Content-Disposition",
       `attachment; filename="audio.mp3"`
