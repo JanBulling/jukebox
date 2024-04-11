@@ -7,6 +7,8 @@ import { getTrackAnalysis } from "@/lib/spotify/analysis";
 import { getTrack } from "@/lib/spotify/track";
 import { searchTrackInYoutube } from "@/lib/youtube/search";
 
+export const dynamic = "force-dynamic";
+
 type Props = {
   params: { id: string };
 };
@@ -45,7 +47,7 @@ export default async function JukeboxTrack({ params }: Props) {
       <AudioPlayer
         trackAnalysis={analysisResult}
         trackDurationSec={track.duration_ms / 1000}
-        audioUrl={`${siteConfig.url}/api/audio?id=${youtubeId}`}
+        audioUrl={`${siteConfig.url}/api/audio/${youtubeId}`}
         // audioUrl={`http://localhost:3000/api/audio?id=${youtubeId}`}
         className='mt-8'
       />

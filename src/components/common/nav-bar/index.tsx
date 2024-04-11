@@ -41,7 +41,7 @@ const NavBar: React.FC = () => {
       <div className='hidden flex-1 flex-col lg:flex lg:flex-row lg:items-center peer-checked:flex'>
         <div className='flex flex-col lg:flex-row lg:flex-1 lg:p-0 p-4 gap-1 border-b border-gray-200 dark:border-gray-900 lg:border-0'>
           {navItems.map(({ text, link }) => (
-            <NavItem key={link} href={link}>
+            <NavItem key={link} href={link} allowSubPath>
               {text}
             </NavItem>
           ))}

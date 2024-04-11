@@ -1,20 +1,17 @@
-import { env } from "@/env.mjs";
-import { NextRequest, NextResponse } from "next/server";
-import ytdl from "ytdl-core";
-import fs from "fs";
 import { ApiError } from "@/utils/api/api-error";
+import { NextResponse } from "next/server";
+import ytdl from "ytdl-core";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(request: NextRequest, response: Response) {
-  try {
-    const youtubeId = request.nextUrl.searchParams.get("id");
-    if (!youtubeId) return ApiError("BAD-REQUEST", "No youtube id given");
+type Params = {
+  params: { id: string };
+};
 
-    const asFile =
-      env.NODE_ENV !== "development"
-        ? false
-        : request.nextUrl.searchParams.get("as_file") ?? false;
+export async function GET(response: NextResponse, { params }: Params) {
+  try {
+    const youtubeId = params.id;
+    if (!youtubeId) return ApiError("BAD-REQUEST", "No youtube id given");
 
     const info = await ytdl.getInfo(youtubeId);
 
@@ -28,27 +25,12 @@ export async function GET(request: NextRequest, response: Response) {
       }
     );
 
-    if (asFile) {
-      const outputFilePath = `./public/tmp/${info.videoDetails.title}.${format.container}`;
-      const outputStream = fs.createWriteStream(outputFilePath);
-
-      ytdl.downloadFromInfo(info, { format: format }).pipe(outputStream);
-
-      return NextResponse.json({
-        success: true,
-        outputDir: outputFilePath,
-        title: info.videoDetails.title,
-        author: info.videoDetails.author,
-        contentLength: format.contentLength,
-      });
-    }
-
     const downloadedData = ytdl.downloadFromInfo(info, { format: format });
 
     const responseHeaders = new Headers(response.headers);
     responseHeaders.set(
       "Content-Disposition",
-      `attachment; filename="test.mp3"`
+      `attachment; filename="audio.mp3"`
     );
     responseHeaders.set("Accept-Ranges", "bytes");
     responseHeaders.set("Content-Type", "audio/mp4");
@@ -58,7 +40,7 @@ export async function GET(request: NextRequest, response: Response) {
       headers: responseHeaders,
     });
   } catch (err) {
-    console.error("[AUDIO]- GET", err);
+    console.error("[AUDIO/[id]]- GET", err);
     return ApiError("SERVER-ERROR", "Something went wrong");
   }
 }

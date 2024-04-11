@@ -3,6 +3,8 @@ import { db } from "@/lib/db/db";
 import { spotifyIdToYoutubeIdTable } from "@/lib/db/schema";
 import { sql } from "drizzle-orm";
 
+export const revalidate = 12 * 60 * 60;
+
 export default async function Jukebox() {
   const [count] = await db
     .select({

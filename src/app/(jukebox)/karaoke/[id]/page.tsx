@@ -1,9 +1,10 @@
 import { Karaoke } from "@/components/karaoke/karaoke";
 import { siteConfig } from "@/config/site-config";
-import { getAccessToken } from "@/lib/spotify/access-token";
 import { getTrack } from "@/lib/spotify/track";
 import { searchTrackInYoutube } from "@/lib/youtube/search";
 import { Lyrics } from "@/types/lyrics";
+
+export const dynamic = "force-dynamic";
 
 type Props = {
   params: { id: string };
@@ -32,7 +33,7 @@ export default async function KaraokeTrack({ params }: Props) {
 
       <Karaoke
         lyrics={lyrics}
-        audioUrl={`${siteConfig.url}/api/audio?id=${youtubeId}`}
+        audioUrl={`${siteConfig.url}/api/audio/${youtubeId}`}
       />
     </>
   );

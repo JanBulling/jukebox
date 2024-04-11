@@ -54,17 +54,18 @@ export async function getVideoDetails(id: string | string[] | null) {
 
 export async function searchTrackInYoutube({ track }: Props) {
   const artists = track.artists.map((a) => a.name);
+
   // firstly check in db for the id (the cost of searching youtube is very large)
   const [dbResult] = await db
     .select()
     .from(spotifyIdToYoutubeIdTable)
     .where(
       or(
-        eq(spotifyIdToYoutubeIdTable.spotifyId, track.id),
-        and(
-          eq(spotifyIdToYoutubeIdTable.songName, track.name),
-          eq(spotifyIdToYoutubeIdTable.artists, artists.join(", "))
-        )
+        eq(spotifyIdToYoutubeIdTable.spotifyId, track.id)
+        // and(
+        //   eq(spotifyIdToYoutubeIdTable.songName, track.name),
+        //   eq(spotifyIdToYoutubeIdTable.artists, artists.join(", "))
+        // )
       )
     );
 
