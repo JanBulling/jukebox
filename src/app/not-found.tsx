@@ -1,18 +1,17 @@
 "use client";
 
-import UseNavBar from "@/components/use-nav-bar";
-import UseFooter from "@/components/use-footer";
-
 import { Button } from "@/ui/button";
 import { Icon } from "@/ui/icons";
 import { Link } from "@/ui/link";
 
 import "@/styles/effects.css";
+import NavBar from "@/components/common/nav-bar";
+import Footer from "@/components/common/footer";
 
 export default function NotFound() {
   return (
     <div className='grid size-full grid-cols-[1fr] grid-rows-[auto_1fr_auto]'>
-      <UseNavBar />
+      <NavBar />
 
       <div className='glowingBackdrop' />
 
@@ -30,7 +29,7 @@ export default function NotFound() {
         </Link>
       </main>
 
-      <UseFooter />
+      <Footer />
     </div>
   );
 }

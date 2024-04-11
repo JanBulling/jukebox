@@ -1,3 +1,5 @@
+"use client";
+
 import { Icon } from "@/ui/icons";
 import { Label } from "@/ui/input/label";
 import React from "react";
@@ -6,15 +8,18 @@ import NavItem from "../nav-item";
 import { Button } from "@/ui/button";
 import Logo from "@/components/logo";
 
-type Props = {
-  navItems: Array<{
-    text: string;
-    link: string;
-    target?: React.HTMLAttributeAnchorTarget | undefined;
-  }>;
-};
+const navItems = [
+  {
+    link: "/jukebox",
+    text: "Jukebox",
+  },
+  {
+    link: "/karaoke",
+    text: "Karaoke",
+  },
+];
 
-const NavBar: React.FC<Props> = ({ navItems }) => {
+const NavBar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   return (
@@ -35,8 +40,8 @@ const NavBar: React.FC<Props> = ({ navItems }) => {
 
       <div className='hidden flex-1 flex-col lg:flex lg:flex-row lg:items-center peer-checked:flex'>
         <div className='flex flex-col lg:flex-row lg:flex-1 lg:p-0 p-4 gap-1 border-b border-gray-200 dark:border-gray-900 lg:border-0'>
-          {navItems.map(({ text, link, target }) => (
-            <NavItem key={link} href={link} target={target}>
+          {navItems.map(({ text, link }) => (
+            <NavItem key={link} href={link}>
               {text}
             </NavItem>
           ))}

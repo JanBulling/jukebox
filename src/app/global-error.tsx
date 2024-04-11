@@ -1,17 +1,18 @@
 "use client";
 
-import UseNavBar from "@/components/use-nav-bar";
 import { Button } from "@/ui/button";
 import { Icon } from "@/ui/icons";
 import { Link } from "@/ui/link";
 import "@/styles/effects.css";
+import NavBar from "@/components/common/nav-bar";
+import Footer from "@/components/common/footer";
 
 const GlobalErrorPage: React.FC<{ error: Error }> = ({ error }) => {
   console.error(error);
 
   return (
     <>
-      <UseNavBar />
+      <NavBar />
 
       <div className='glowingBackdrop' />
 
@@ -28,6 +29,8 @@ const GlobalErrorPage: React.FC<{ error: Error }> = ({ error }) => {
           </Button>
         </Link>
       </main>
+
+      <Footer />
     </>
   );
 };

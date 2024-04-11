@@ -49,7 +49,7 @@ const NavItem: React.FC<React.PropsWithChildren<Props>> = ({
         {children}
       </span>
 
-      {((type === "nav" && href.startsWith("http")) || target === "_blank") && (
+      {type === "nav" && (href.startsWith("http") || target === "_blank") && (
         <Icon
           icon='ArrowUpRight'
           className={cn(

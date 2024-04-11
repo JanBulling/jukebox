@@ -3,30 +3,27 @@
 import NavItem from "../nav-item";
 import { Icon } from "@/ui/icons";
 
-type Props = {
-  navItems: Array<{
-    text: string;
-    link: string;
-    target?: React.HTMLAttributeAnchorTarget | undefined;
-  }>;
-  socialLinks: Array<{
-    icon: string;
-    link: string;
-    target?: React.HTMLAttributeAnchorTarget | undefined;
-  }>;
-};
+const footerItems = [
+  {
+    link: "/info",
+    text: "Info",
+  },
+];
 
-const Footer: React.FC<Props> = ({ navItems, socialLinks }) => {
+const socialLinks = [
+  {
+    icon: "Github",
+    link: "https://github.com/JanBulling",
+    target: "_blank",
+  },
+];
+
+const Footer: React.FC = () => {
   return (
     <footer className='flex flex-col items-center gap-6 border-t border-gray-200 bg-white px-8 py-4 dark:border-gray-900 dark:bg-gray-950 md:flex-row md:justify-between md:py-5'>
       <div className='flex flex-wrap content-start items-center justify-center gap-1 self-stretch'>
-        {navItems.map((item) => (
-          <NavItem
-            type='footer'
-            href={item.link}
-            target={item.target}
-            key={item.link}
-          >
+        {footerItems.map((item) => (
+          <NavItem type='footer' href={item.link} key={item.link}>
             {item.text}
           </NavItem>
         ))}

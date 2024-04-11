@@ -58,7 +58,7 @@ export async function GET(request: NextRequest, response: Response) {
       headers: responseHeaders,
     });
   } catch (err) {
-    console.log("[AUDIO]- GET", err);
+    console.error("[AUDIO]- GET", err);
     return ApiError("SERVER-ERROR", "Something went wrong");
   }
 }

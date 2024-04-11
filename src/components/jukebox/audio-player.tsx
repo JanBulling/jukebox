@@ -79,10 +79,10 @@ export function AudioPlayer({
     const fadeInTime = audioCtx.currentTime;
     const fadeOutTime = fadeInTime + beatDuration - fadeDuration;
 
-    gainNode.gain.setValueAtTime(0.5, fadeInTime);
-    gainNode.gain.linearRampToValueAtTime(1, fadeInTime + fadeDuration);
-    gainNode.gain.setValueAtTime(1, fadeOutTime);
-    gainNode.gain.linearRampToValueAtTime(0.5, fadeOutTime + fadeDuration);
+    gainNode.gain.setValueAtTime(0.2, fadeInTime);
+    gainNode.gain.linearRampToValueAtTime(0.5, fadeInTime + fadeDuration);
+    gainNode.gain.setValueAtTime(0.5, fadeOutTime);
+    gainNode.gain.linearRampToValueAtTime(0.2, fadeOutTime + fadeDuration);
 
     source.start(0, start, beatDuration);
     return source;
@@ -130,13 +130,36 @@ export function AudioPlayer({
     const jumpProbability =
       0.85 / (1 + Math.exp((0.4 * trackDurationSec - beat.start) / 20));
 
-    // return next beat, if no jump is selected
-    if (Math.random() >= jumpProbability) {
+    const jumpWeights = beat.similars.map((s) => {
+      const timeDiff = s.idx - currIdx;
+
+      let scale = 1;
+
+      if (timeDiff < 0) {
+        // oportunity to jump back in time should be more likely
+        scale = 1 + Math.abs(timeDiff / 10);
+      } else {
+        // make jumping forward more unlikely
+        scale = 1 - Math.min(timeDiff / 50, 0.5);
+      }
+
+      return scale * s.conf;
+    });
+
+    const weightsSum = jumpWeights.reduce((prev, curr) => prev + curr, 0);
+    const notJumpWeight = weightsSum / jumpProbability - weightsSum;
+
+    // add "not jump" as first argument
+    jumpWeights.unshift(notJumpWeight);
+
+    const randomIndex = weightedIndex(jumpWeights);
+
+    // first index means don't jump so return next index
+    if (randomIndex === 0) {
       return (currIdx + 1) % trackAnalysis.length;
     }
 
-    const jumpWeights = beat.similars.map((s) => s.conf);
-    const randomIndex = weightedIndex(jumpWeights);
+    const jumpIdx = randomIndex - 1;
 
     setJumps((j) => j + 1);
     lastJump = 0;
@@ -145,12 +168,12 @@ export function AudioPlayer({
       "Jumped (p=",
       jumpProbability,
       ") to index",
-      beat.similars[randomIndex].idx
+      beat.similars[jumpIdx].idx
     );
 
     // return one after the index of a song part, which is similar
     // to the currently played
-    return beat.similars[randomIndex].idx;
+    return beat.similars[jumpIdx].idx;
   };
 
   // looping in this useEffect, because of pausing and refreshing total beats,

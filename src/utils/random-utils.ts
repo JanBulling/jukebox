@@ -44,10 +44,13 @@ export function weightedRandom(items: any, weights: number[]) {
 }
 
 export function weightedIndex(weights: number[]) {
+  if (weights.length === 1) return 0;
+
   const cumulativeWeights: number[] = [];
   for (let i = 0; i < weights.length; i++) {
     cumulativeWeights[i] = weights[i] + (cumulativeWeights[i - 1] || 0);
   }
+
   const maxCumulativeWeight = cumulativeWeights[cumulativeWeights.length - 1];
   const randomNumber = maxCumulativeWeight * Math.random();
   for (let i = 0; i < weights.length; i++) {
@@ -55,5 +58,6 @@ export function weightedIndex(weights: number[]) {
       return i;
     }
   }
+
   return 0;
 }

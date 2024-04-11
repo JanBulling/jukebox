@@ -74,15 +74,30 @@ export function analysePreprocessedTrack(
     };
   }
 
+  const { top, jumpToIdxs } = filterTopResults(result, maxJumps);
+
+  const combined = combineBeats(top, jumpToIdxs);
+
+  return combined;
+}
+
+/**
+ * filteres all analysed beats, so only the jumps with the highes probability stay
+ *
+ * @param beats analysed beats
+ * @param maxJumps number of the maximum jumps in the resulted jump-graph
+ * @returns new graph with only a maximum of `maxJumps` possible jumps and an array of all 'jumped-to' indexes
+ */
+function filterTopResults(beats: AnalysedBeat[], maxJumps: number) {
   // only get the best jumps
   let maxSimilars = Array.from(
-    result.flatMap((a) => (a.similars ? a.similars : []))
+    beats.flatMap((a) => (a.similars ? a.similars : []))
   )
     .sort((a, b) => b?.conf - a?.conf)
     .slice(0, maxJumps);
 
   // not ideal but good enought
-  const limitedResults: AnalysedBeat[] = result.map((item) => {
+  const limitedResults: AnalysedBeat[] = beats.map((item) => {
     const newItem = { ...item };
     if (newItem.similars) {
       newItem.similars = newItem.similars.filter((s) =>
@@ -92,21 +107,33 @@ export function analysePreprocessedTrack(
     return newItem;
   });
 
-  // combine all sequential beats
-  const jumpedTo = maxSimilars.map((b) => b.idx);
+  return {
+    top: limitedResults,
+    jumpToIdxs: maxSimilars.map((s) => s.idx),
+  };
+}
+
+/**
+ * combines as much beats as possible to one new and larger 'beat'
+ *
+ * @param beats analysed beats
+ * @param jumpToIdxs array of indices, that are end points of jumps
+ * @returns combined beats
+ */
+function combineBeats(beats: AnalysedBeat[], jumpToIdxs: number[]) {
   const combined: AnalysedBeat[] = [];
 
   //                        oldIndex -> newIndex
   const newIndexMap = new Map<number, number>();
 
-  for (let i = 0; i < limitedResults.length; i++) {
-    const beat = limitedResults[i];
+  for (let i = 0; i < beats.length; i++) {
+    const beat = beats[i];
 
-    let nextCertainIdx = limitedResults.length - 1;
-    for (let j = i; j < limitedResults.length; j++) {
+    let nextCertainIdx = beats.length - 1;
+    for (let j = i; j < beats.length; j++) {
       if (
-        jumpedTo.includes(j) ||
-        (limitedResults[j].similars && limitedResults[j].similars!.length > 0)
+        jumpToIdxs.includes(j) ||
+        (beats[j].similars && beats[j].similars!.length > 0)
       ) {
         // combined.push(limitedResults[j]);
 
@@ -118,10 +145,10 @@ export function analysePreprocessedTrack(
     const updatedBeat: AnalysedBeat = {
       start: beat.start,
       duration:
-        limitedResults[nextCertainIdx].start +
-        limitedResults[nextCertainIdx].duration -
+        beats[nextCertainIdx].start +
+        beats[nextCertainIdx].duration -
         beat.start,
-      similars: limitedResults[nextCertainIdx].similars,
+      similars: beats[nextCertainIdx].similars,
     };
     combined.push(updatedBeat);
 
@@ -130,8 +157,7 @@ export function analysePreprocessedTrack(
     i = nextCertainIdx;
   }
 
-  // console.log(newIndexMap);
-
+  // restore new indexes in array
   combined.forEach((b) => {
     b.similars?.forEach((s) => {
       s.idx = newIndexMap.get(s.idx + 1) ?? 0;

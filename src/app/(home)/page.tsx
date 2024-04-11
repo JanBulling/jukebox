@@ -7,7 +7,7 @@ export default function Home() {
     <>
       <div className='glowingBackdrop' />
 
-      <div className='my-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1fr_2fr]'>
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1fr_2fr]'>
         <div>
           <h1 className='text-5xl'>Play Music Indefinitely</h1>
           <p className='text-lg mt-2'>
