@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
+import React from "react";
 
 type Props = Omit<React.HTMLAttributes<HTMLDivElement>, "children"> & {
   initial?: string;
@@ -40,8 +41,6 @@ export function Searchbar({
 
   function onSubmit(data: FormData) {
     router.push(`/search?q=${data.q}&for=${forType}`);
-    router.refresh();
-    // window.location.reload();
   }
 
   return (
