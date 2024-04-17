@@ -10,12 +10,12 @@ export const getAccessToken = unstable_cache(
   }
 );
 
-export const refreshAccessToken = () => {
+export const refreshAccessToken = async () => {
   revalidateTag("spotify-access-token");
-  // return await getAccessToken();
+  return await getClientCredentials();
 };
 
-async function getClientCredentials() {
+export async function getClientCredentials() {
   console.info("Requesting spotify access token");
 
   const authentication = Buffer.from(

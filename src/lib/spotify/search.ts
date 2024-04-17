@@ -1,6 +1,10 @@
 import spotifyConfig from "@/config/spotify-config";
 import { TrachSearchResult } from "@/types/spotify";
-import { getAccessToken, refreshAccessToken } from "./access-token";
+import {
+  getAccessToken,
+  getClientCredentials,
+  refreshAccessToken,
+} from "./access-token";
 
 type OptionsProps = {
   type?: ("track" | "album" | "artist")[];
@@ -14,9 +18,10 @@ export async function searchTracks(
     type: ["track"],
     limit: 10,
     offset: 0,
-  }
+  },
+  accessToken?: string
 ) {
-  const accessToken = await getAccessToken();
+  const token = accessToken ? accessToken : await getAccessToken();
 
   const urlParameters = new URLSearchParams({
     q: q,
@@ -30,7 +35,7 @@ export async function searchTracks(
   const response = await fetch(requestUrl, {
     method: "GET",
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
   });
@@ -38,8 +43,8 @@ export async function searchTracks(
   const status = response.status;
 
   if (status === 401) {
-    refreshAccessToken();
-    return await searchTracks(q, options);
+    const newAccessToken = await refreshAccessToken();
+    return await searchTracks(q, options, newAccessToken);
   } else if (status === 200) {
     const data = await response.json();
     return data as TrachSearchResult;
